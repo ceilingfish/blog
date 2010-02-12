@@ -1,4 +1,4 @@
-require 'toto'
+require 'ceilingfish-toto'
 
 @config = Toto::Config::Defaults
 
