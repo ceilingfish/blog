@@ -1,17 +1,53 @@
-<!doctype html>
-<html>
-  <head>
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <link rel="alternate" type="application/atom+xml" title="<%= title %> - feed" href="/index.xml" />
-    <title><%= title %></title>
-  </head>
-  <body>
-    <section>
-      <%= yield %> 
-    </section>
-    <footer>
-      powered by <a href="http://cloudhead.io/toto">toto</a>
-    </footer>
-  </body>
-</html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC
+    "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
+    "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg-flat.dtd">
 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="/css/formtastic.css" />
+  <link rel="alternate" type="application/atom+xml" title="<%= title %> - feed" href="/index.xml" />
+  <title><%= title %></title>
+</head>
+<body>
+  <div id="page_container">
+
+	<div id="navigation">
+	  <ul>
+	      <li><a href="home">Home</a></li>
+	      <li><a href="snippets">Snippets</a></li>
+	  </ul>
+
+	  <form method="get" id="search" action="http://www.google.com/search">
+		<label for="q">Search</label>
+
+	      <input type="text" id="q" value="" name="q" />
+	      <input type="hidden" name="sitesearch" value="localhost" />
+	  </form>
+	</div>
+    
+	<div id="secondary_navigation">
+		<% unless archives.empty? %>
+			<h2>Recent Posts</h2>
+			<ul class="archive">
+			<% archives.each do | post | %>
+				<li><%= "&laquo; #{post.title}" %> <small>published <%= post.date %></small></li>
+			<% end %>
+			</ul>
+				<a href="archives">Archive</a>
+			<hr />
+		<% end %>
+
+
+	</div>
+
+  	<h1 id="page_heading">Ceilingfish</h1>	
+
+	<div id="main">
+      <%= yield %>
+    </div>
+    <div id="footer">powered by <a href="http://cloudhead.io/toto">toto</a></div>
+  </div>
+</body>
+</html>

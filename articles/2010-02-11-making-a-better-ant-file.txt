@@ -1,0 +1,85 @@
+title: Making a better ant file
+author: Tom Williams
+date: 2010/02/11
+
+Ant files are commonly used to manage Java projects, not always I'll grant you, but I've no personal experience of Maven, and as far as I can tell Ant does everything that I need. What I struggled with when I first started using them though was how to structure them, and furthermore how do you manage them between multiple developer workspaces.
+
+
+
+Developer Specific Settings
+---------------------------
+
+Full Disclosure: This technique isn't my own, it was shown to me by a very talented programmer called David Harrigan who I worked with a couple of years back. Sadly I can't find a blog with his name on.
+
+Let's take an example where your project depends on a load of external graphical assets, the kind of stuff that would be absolute insanity to actually put into source control, and they get should be copied into the assets directory of any build, like so:
+
+	<target name="package-assets">
+		<copy todir="${dist.assets.dir}" overwrite="false">
+			<fileset dir="${assets.dir}" />
+		</copy>
+	</target>
+
+
+So each developer copies the relevant graphics onto their own hard disk, but of course they're all in different folders. So we need to set the `assets.dir` property for each developer individually, there's loads of ways to do this. Firstly we could do it as a command to the ant argument:
+
+	ant -Dassets.dir=/path/to/assets
+	
+But this is going to get very cumbersome very quickly. We really don't want to have to be retyping all these arguments every time we want to run a build. So on to phase two, put them in a properties file
+
+<small>build.properties</small>
+
+	assets.dir=/path/to/assets
+	
+Then we include this at the top of the build file like this
+
+<small>build.xml</small>
+	
+	<project name="example_project" default="build">
+
+	    <property file="build.properties" />
+		....
+	
+Now here's the important bit **make sure the `build.properties` file never gets committed**. Add it to the ignore list for your version control (here's how to do that in [git](http://git.example "TODO") and [subversion](http://subversion.example "TODO")). This means that individual developers can define their own version of the file and it will automatically be loaded when they run ant.
+
+Of course it's best not to leave developers guessing at what the correct structure of the build.properties file should be, so it's generally useful to include an example file
+
+<small>build.properties-example</small>
+
+	assets.dir=/path/to/assets
+	
+Dependency Management
+---------------------
+
+Ivy is an absolutely awesome tool for handling dependent libraries, though there are a couple of tweaks you'll need to make to get the behaviour you expect by default. First things first however, here's [a very good page on how to get ivy installed in seconds](http://link.to/ivy.docs "TODO"). So now all we have to do is define a task to actually invoke ivy.
+
+	<target name="fetch-libs" depends="init-ivy">
+		<ivy:retrieve file="ivy.xml" pattern="${libs.dir}/[artifact].[ext]" type="jar" transitive="false" />
+	</target>
+
+The most important bit here is `transitive="false"`. This stops ivy downloading any jars that are marked up as dependent by your resource. So for example if you use the dependency
+
+	<dependency org="org.springframework" name="spring-core" rev="2.5.6" />
+	
+It'll also try and download [all of these]("http://link.to/spring-core.dependencies", "TODO"), which probably isn't what you want, particularly given some of the resources reference aren't actually stored in the Maven repositories, due to licensing issues.
+
+The other useful bit of info here is `pattern="${libs.dir}/[artifact].[ext]"` this tells ivy to download your dependencies into the `libs.dir` folder (which for the sake of outright insanity let's assume is libs/), and structure them as such:
+
+	libs/
+		commons-jxpath.jar
+		commons-lang.jar
+		jackson-core-asl.jar
+		jackson-mapper-asl.jar
+		jetty-util.jar
+		jetty.jar
+		jruby.jar
+		junit.jar
+		mongo-java-driver.jar
+		velocity.jar
+		
+Because ivy names jars uniformly using this scheme we avoid any problems with two versions of a library being loaded (other schemes I've seen include a version number in the jar name, which can end up with both being in the classpath, which can get a little weird). One thing to remember though is do remember to add the `libs/` directory to your source control ignore list. Running diffs on large binary files can really slow down SCM systems.
+
+
+Standardize your structure
+--------------------------
+
+Having a standardized structure for your build files can be really helpful, if developers get used to seeing the same targets they'll be more easily able to insert the correct code. I could harp on about various ways to organise your flow, but I think a much better approach is to just get on and build one. I've created a [sample ant file on github]("http://github.com/ceilingfish/a_better_antfile"). Feel free to take it and use it to your heart's content
