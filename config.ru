@@ -1,5 +1,8 @@
 require 'ceilingfish-toto'
 
+require File.dirname(__FILE__) + '/vendor/gems/environment'
+Bundler.require_env
+
 # Rack config
 use Rack::Static, :urls => ['/css', '/js', '/images', '/favicon.ico'], :root => 'public'
 use Rack::CommonLogger
