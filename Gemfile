@@ -1,1 +1,1 @@
-gem 'ceilingfish-toto', '0.3.2'
+gem 'ceilingfish-toto', '0.3.5'

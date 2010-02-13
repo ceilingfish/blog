@@ -82,4 +82,4 @@ Because ivy names jars uniformly using this scheme we avoid any problems with tw
 Standardize your structure
 --------------------------
 
-Having a standardized structure for your build files can be really helpful, if developers get used to seeing the same targets they'll be more easily able to insert the correct code. I could harp on about various ways to organise your flow, but I think a much better approach is to just get on and build one. I've created a [sample ant file on github]("http://github.com/ceilingfish/a_better_antfile"). Feel free to take it and use it to your heart's content
+Having a standardized structure for your build files can be really helpful, if developers get used to seeing the same targets they'll be more easily able to insert the correct code. I could harp on about various ways to organise your flow, but I think a much better approach is to just get on and build one. I've created a [sample ant file on github]("http://github.com/ceilingfish/a_better_antfile"). Feel free to take it and use it to your heart's content.
