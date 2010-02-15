@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/vendor/gems/environment'
 Bundler.require_env
-# require '/workspace/toto/lib/ceilingfish/toto'
 
 # Rack config
 use Rack::Static, :urls => ['/css', '/js', '/images', '/favicon.ico'], :root => 'public'
