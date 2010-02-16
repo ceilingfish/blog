@@ -12,35 +12,10 @@
 </head>
 <body>
   <div id="page_container">
-
-	<div id="navigation">
-	  <ul>
-	      <li><a href="home">Home</a></li>
-	      <li><a href="snippets">Snippets</a></li>
-	  </ul>
-
-	  <form method="get" id="search" action="http://www.google.com/search">
-		<label for="q">Search</label>
-
-	      <input type="text" id="q" value="" name="q" />
-	      <input type="hidden" name="sitesearch" value="localhost" />
-	  </form>
-	</div>
+	
+	<%= import('layout/page_navigation.rhtml') %>
     
-	<div id="secondary_navigation">
-		<% unless archives.empty? %>
-			<h2>Recent Posts</h2>
-			<ul class="archive">
-			<% archives.each do | post | %>
-				<li><%= "&laquo; #{post.title}" %> <small>published <%= post.date %></small></li>
-			<% end %>
-			</ul>
-				<a href="archives">Archive</a>
-			<hr />
-		<% end %>
-
-
-	</div>
+	<%= import('layout/secondary_navigation.rhtml') %>
 
   	<h1 id="page_heading">Ceilingfish</h1>	
 
