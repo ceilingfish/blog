@@ -5,8 +5,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-  <link rel="stylesheet" type="text/css" href="/css/main.css" />
-  <link rel="stylesheet" type="text/css" href="/css/formtastic.css" />
+	<link rel="stylesheet" type="text/css" href="/css/main.css" />
+	<link rel="stylesheet" type="text/css" href="/css/formtastic.css" />
+  	<link rel="stylesheet" type="text/css" href="/css/shCore.css" />
+  	<link rel="stylesheet" type="text/css" href="/css/shThemeDefault.css" />
+
+	<!-- The syntax highlighter -->
+	<script type="text/javascript" src="/js/shCore.js"></script>
+	<script type="text/javascript" src="/js/brushes/shBrushXml.js"></script>
+	<script type="text/javascript" src="/js/brushes/shBrushBash.js"></script>
+	<script type="text/javascript" src="/js/brushes/shBrushRuby.js"></script>
+	<script type="text/javascript" src="/js/brushes/shBrushPlain.js"></script>
+	<script type="text/javascript">
+		SyntaxHighlighter.all();
+	</script>
+
   <link rel="alternate" type="application/atom+xml" title="<%= title %> - feed" href="/index.xml" />
   <title><%= title %></title>
 </head>
