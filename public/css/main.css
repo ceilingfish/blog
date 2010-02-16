@@ -10,7 +10,8 @@ body
 
 a
 {
-	color: black;
+	color: #7F171F;
+	font-weight: bold;
   	text-decoration: none;
 }
 
@@ -124,6 +125,8 @@ h1,h2,h3,h4,h5,h6 {
 	font-size: 1.75em;
 	border: 1px solid #313125;
 	background-color: #E7E7DF;
+	color: black;
+	font-weight: normal;
 }
 
 #navigation ul li a:hover {
@@ -131,6 +134,8 @@ h1,h2,h3,h4,h5,h6 {
 	height: 2.0em;
 	text-decoration: none;
 	background-color: #F3F3F3;
+	color: black;
+	font-weight: normal;
 }
 
 #search {
