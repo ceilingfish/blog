@@ -1,5 +1,4 @@
-require File.dirname(__FILE__) + '/vendor/gems/environment'
-Bundler.require_env
+require 'ceilingfish-toto'
 
 # Rack config
 use Rack::Static, :urls => ['/css', '/js', '/images', '/favicon.ico'], :root => 'public'
@@ -24,12 +23,10 @@ toto = Toto::Server.new do
   # set :ext,       'txt'                                     # file extension for articles
   
 	set :title,     Dir.pwd.split('/').last                   # site title
-	set :root,      "index"                                   # page to load on /
+	set :root,      "/index"                                   # page to load on /
 	set :summary,   :max => 150, :delim => /~/                # length of article summary and delimiter
 	set :cache,      28800                                    # cache duration, in seconds
 	set :date, lambda {|now| now.strftime("%B #{now.day.ordinal} %Y") }
 end
 
 run toto
-
-
