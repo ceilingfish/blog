@@ -1,0 +1,110 @@
+title: Making a better ant file
+author: Tom Williams
+date: 2010/02/11
+
+Ant files are commonly used to manage Java projects, not always I'll grant you, but I've no personal experience of Maven, and as far as I can tell Ant does everything that I need. What I struggled with when I first started using them though was how to structure them, and furthermore how do you manage them between multiple developer workspaces.
+
+Developer Specific Settings
+---------------------------
+
+Full Disclosure: This technique isn't my own, it was shown to me by a very talented programmer called David Harrigan who I worked with a couple of years back. Sadly I can't find a blog with his name on.
+
+Let's take an example where your project depends on a load of external graphical assets, the kind of stuff that would be absolute insanity to actually put into source control, and they get should be copied into the assets directory of any build, like so:
+
+<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<target name="package-assets">
+	<copy todir="${dist.assets.dir}" overwrite="false">
+		<fileset dir="${assets.dir}" />
+	</copy>
+</target>
+]]></script>
+
+
+So each developer copies the relevant graphics onto their own hard disk, but of course they're all in different folders. So we need to set the `assets.dir` property for each developer individually, there's loads of ways to do this. Firstly we could do it as a command to the ant argument:
+
+<script type="syntaxhighlighter" class="brush: bash"><![CDATA[
+ant -Dassets.dir=/path/to/assets
+]]></script>
+	
+But this is going to get very cumbersome very quickly. We really don't want to have to be retyping all these arguments every time we want to run a build. So on to phase two, put them in a properties file
+
+<small>build.properties</small>
+
+<script type="syntaxhighlighter" class="brush: plain"><![CDATA[
+assets.dir=/path/to/assets
+]]></script>
+	
+Then we include this at the top of the build file like this
+
+<small>build.xml</small>
+
+<script type="syntaxhighlighter" class="brush: xml"><![CDATA[	
+<project name="example_project" default="build">
+
+    <property file="build.properties" />
+	
+</project>
+]]></script>
+	
+Now here's the important bit **make sure the `build.properties` file never gets committed**. Add it to the ignore list for your version control (here's how to do that in [git](http://github.com/guides/ignore-for-git) and [subversion](http://sdesmedt.wordpress.com/2006/12/10/how-to-make-subversion-ignore-files-and-folders/)). This means that individual developers can define their own version of the file and it will automatically be loaded when they run ant.
+
+Of course it's best not to leave developers guessing at what the correct structure of the build.properties file should be, so it's generally useful to include an example file
+
+<small>build.properties-example</small>
+
+<script type="syntaxhighlighter" class="brush: plain"><![CDATA[
+assets.dir=/path/to/assets
+]]></script>
+	
+Dependency Management
+---------------------
+
+Ivy is an absolutely awesome tool for handling dependent libraries, though there are a couple of tweaks you'll need to make to get the behaviour you expect by default. First things first however, here's [a very good page on how to get ivy installed in seconds](http://ant.apache.org/ivy/history/latest-milestone/install.html). So now all we have to do is define a task to actually invoke ivy.
+
+<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<target name="fetch-libs" depends="init-ivy">
+	<ivy:retrieve file="ivy.xml" pattern="${libs.dir}/[artifact].[ext]" type="jar" transitive="false" />
+</target>
+]]></script>
+
+The most important bit here is `transitive="false"`. This stops ivy downloading any jars that are marked up as dependent by your resource. So for example if you use the dependency
+
+<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<dependency org="org.springframework" name="spring-core" rev="2.5.6" />
+]]></script>
+	
+It'll also try and download [all of these](http://mvnrepository.com/artifact/org.springframework/spring-core/2.5.6)
+
+  * [asm](http://mvnrepository.com/artifact/asm/asm/2.2.3)
+  * [asm-commons](http://mvnrepository.com/artifact/asm/asm-commons/2.2.3)
+  * [asm-util](http://mvnrepository.com/artifact/asm/asm-util/2.2.3)
+  * [backport-util-concurrent](http://mvnrepository.com/artifact/backport-util-concurrent/backport-util-concurrent/3.0)
+  * [commons-collections](http://mvnrepository.com/artifact/commons-collections/commons-collections/3.2)
+  * [commons-logging](http://mvnrepository.com/artifact/commons-logging/commons-logging/1.1.1)
+  * [log4j](http://mvnrepository.com/artifact/log4j/log4j/1.2.15)
+
+which really starts to pump up the download times, because you'll also need to download all the dependencies for each of these sub-dependencies, of which there are another 11. It's enough to make a man cry.
+
+The other useful bit of info in the ivy declaration is `pattern="${libs.dir}/[artifact].[ext]"` this tells ivy to download your dependencies into the `libs.dir` folder (which for the sake of outright insanity let's assume is libs/), and structure them as such:
+
+<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+libs/
+	commons-jxpath.jar
+	commons-lang.jar
+	jackson-core-asl.jar
+	jackson-mapper-asl.jar
+	jetty-util.jar
+	jetty.jar
+	jruby.jar
+	junit.jar
+	mongo-java-driver.jar
+	velocity.jar
+]]></script>
+		
+Because ivy names jars uniformly using this scheme we avoid any problems with two versions of a library being loaded (other schemes I've seen include a version number in the jar name, which can end up with both being in the classpath, which can get a little weird). One thing to remember though is do remember to add the `libs/` directory to your source control ignore list. Running diffs on large binary files can really slow down SCM systems.
+
+
+Standardize your structure
+--------------------------
+
+Having a standardized structure for your build files can be really helpful, if developers get used to seeing the same targets they'll be more easily able to insert the correct code. I could harp on about various ways to organise your flow, but I think a much better approach is to just get on and build one. I've created a [sample ant file on github]("http://github.com/ceilingfish/a_better_antfile"). Feel free to take it and use it to your heart's content.
