@@ -3,7 +3,7 @@
 		<h2>Recent Posts</h2>
 		<ul class="archive">
 		<% archives.each do | post | %>
-			<li><%= "&laquo; #{post.title}" %> <small>published <%= post.date %></small></li>
+			<li><a href="<%= post.path %>"><%= "&laquo; #{post.title}" %></a> <small>published <%= post.date %></small></li>
 		<% end %>
 		</ul>
 			<a href="/archives">Archive</a>
