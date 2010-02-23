@@ -1,4 +1,5 @@
 require 'ceilingfish-toto'
+# require '/workspace/toto/lib/toto'
 
 # Rack config
 use Rack::Static, :urls => ['/css', '/js', '/images', '/favicon.ico'], :root => 'public'
