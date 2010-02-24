@@ -1,2 +1,2 @@
 source :gemcutter
-gem 'ceilingfish-toto', '0.4.2'
+gem 'ceilingfish-toto', '0.4.3'
