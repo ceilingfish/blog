@@ -107,5 +107,3 @@ Standardize your structure
 --------------------------
 
 Having a standardized structure for your build files can be really helpful, if developers get used to seeing the same targets they'll be more easily able to insert the correct code. I've considered various ways to try approaching structuring your ant file well, and I think I'll work on something a bit more meaty and write it up at a future date. In the mean time I've created a sample ant file that utilises both of the techniques illustrated in this article. [you can download the ant file here](/a-better-ant-file.zip)
-
-HI there!
