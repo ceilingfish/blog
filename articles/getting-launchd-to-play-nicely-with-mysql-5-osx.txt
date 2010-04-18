@@ -1,0 +1,31 @@
+author: Tom Williams
+date: 2010/02/11
+
+Recently I was trying to install Mysql 5 installed via MacPorts, and I found a very helpful [tutorial from hivelogic](http://hivelogic.com/articles/compiling-mysql-on-snow-leopard). Which all worked beautifully, but to get the server to launch properly at startup I needed to do a couple more steps. After googling around the errors I was getting I found out that I needed to run mysql_upgrade.
+
+I got an error when I first tried to run myql_upgrade, so there were a couple of preparatory steps I needed to run:
+
+<script type="syntaxhighlighter" class="brush: bash"><![CDATA[
+sudo mkdir -p /opt/local/var/db/mysql5
+sudo chown mysql /opt/local/var/db/mysql5
+sudo mkdir -p /opt/local/var/run/mysql5
+sudo chown mysql /opt/local/var/run/mysql5
+]]></script>
+
+Now run mysql_upgrade to repair the user tables.
+
+<script type="syntaxhighlighter" class="brush: bash"><![CDATA[
+sudo /opt/local/lib/mysql5/bin/mysql_upgrade
+]]></script>
+
+Next I had to link the mysql database to the location that mysql looks for the user data by default
+
+<script type="syntaxhighlighter" class="brush: bash"><![CDATA[
+sudo ln -s /opt/local/var/db/mysql5/mysql /opt/local/libexec/mysql
+]]></script>
+
+Then finally I had to change the ownership of the database files to the user that mysql server runs as.
+
+<script type="syntaxhighlighter" class="brush: bash"><![CDATA[
+sudo chown -R mysql /opt/local/var/db/mysql5/mysql
+]]></script>
