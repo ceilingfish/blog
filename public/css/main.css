@@ -178,6 +178,7 @@ h1#page_heading {
 	float: right;
 	margin-right: 40px;
 	font-size: 1.1em;
+	width: 450px;
 }
 
 #secondary_navigation ul.archive {
